@@ -9,7 +9,11 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/dashboard/overview').then(r => r.json()).then(setOverview).finally(() => setLoading(false))
+    fetch('/api/dashboard/overview')
+      .then(r => r.json())
+      .then(d => { if (d && d.totalRevenue !== undefined) setOverview(d) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   const exportCSV = () => {
@@ -28,6 +32,13 @@ export default function ReportsPage() {
   }
 
   if (loading) return <div className="animate-pulse space-y-4"><div className="h-8 bg-muted rounded w-1/3" /><div className="h-64 bg-muted rounded" /></div>
+
+  if (!overview) return (
+    <div className="space-y-6">
+      <h1 className="text-3xl font-bold">Relatórios</h1>
+      <p className="text-muted-foreground">Nenhum dado disponível ainda. Cadastre obras e lançamentos para gerar relatórios.</p>
+    </div>
+  )
 
   return (
     <div className="space-y-6">

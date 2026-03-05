@@ -26,11 +26,11 @@ export default function AuditPage() {
   const loadData = () => {
     setLoading(true)
     Promise.all([
-      fetch('/api/audit/alerts').then(r => r.json()),
-      fetch('/api/audit/log?limit=100').then(r => r.json()),
+      fetch('/api/audit/alerts').then(r => r.json()).catch(() => []),
+      fetch('/api/audit/log?limit=100').then(r => r.json()).catch(() => []),
     ]).then(([a, l]) => {
-      setAlerts(a)
-      setLogs(l)
+      if (Array.isArray(a)) setAlerts(a)
+      if (Array.isArray(l)) setLogs(l)
     }).finally(() => setLoading(false))
   }
 
